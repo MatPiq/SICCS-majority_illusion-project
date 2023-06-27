@@ -120,6 +120,23 @@ def create_docs(user_texts: Dict[str, str]) -> List[List[str]]:
 
 
 def create_dfm(docs: List[List[str]], doc_names: List[str]) -> pd.DataFrame:
+    """
+    Creates a document frequency matrix from a list of documents.
+
+    param
+    ------
+    docs: List[List[str]]
+        List of documents. Each document is a list of words.
+    doc_names: List[str]
+        List of document names.
+
+    return
+    ------
+    dfm: pd.DataFrame
+        Document frequency matrix. Each row is a document and each column is a
+        word. Column names are the vocabulary and row names are the document
+        names (user names).
+    """
     vocab = []
     for doc in docs:
         vocab.extend(list(doc))

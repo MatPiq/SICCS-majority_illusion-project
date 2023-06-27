@@ -63,6 +63,15 @@ def create_graph(
 
 
 def plot_degree_dist(G: nx.Graph) -> None:
+    """
+    Plot the degree distribution of a graph.
+
+    param
+    -----
+    G: nx.Graph
+        Graph to plot degree distribution of.
+    """
+
     # Get degree distribution
     counts = Counter(G.degree[node] for node in G.nodes)
 
@@ -84,6 +93,17 @@ def plot_degree_dist(G: nx.Graph) -> None:
 
 
 def plot_top_k_degree(G: nx.DiGraph, k: int = 50) -> None:
+    """
+    Plot the top k users with the highest in- and out-degree.
+
+    param
+    -----
+    G: nx.DiGraph
+        Directed graph to plot top k users of.
+    k: int
+        Number of users to plot.
+    """
+
     indegrees = sorted(
         {node: G.in_degree[node] for node in G.nodes}.items(), key=lambda item: item[1]
     )
@@ -113,6 +133,16 @@ def plot_top_k_degree(G: nx.DiGraph, k: int = 50) -> None:
 def calculate_majority_illusion(
     G: nx.Graph, topic_dist_path: str = "data/user-topic_distribution.csv"
 ) -> Tuple[np.ndarray, List[str]]:
+    """
+    Calculate the majority illusion for a graph.
+
+    param
+    -----
+    G: nx.Graph
+        Undirected graph to calculate majority illusion for.
+    topic_dist_path: str
+        Path to the topic distribution for each user.
+    """
     # Get largest connected component
     Gcc = sorted(nx.connected_components(G), key=len, reverse=True)
     G = G.subgraph(Gcc[0])
@@ -154,6 +184,16 @@ def calculate_majority_illusion(
 
 
 def plot_majority_ridge_plot(majority_illusion: np.ndarray) -> None:
+    """
+    Plot the majority illusion as a ridge plot, i.e. distribution of the
+    deviation from the global topic distribution.
+
+    param
+    -----
+    majority_illusion: np.ndarray
+        Array of the deviation from the global topic distribution.
+    """
+
     plot_df = pd.DataFrame(majority_illusion, columns=TOPIC_LABELS).melt()
     fig, _ = joypy.joyplot(
         plot_df,
@@ -181,6 +221,18 @@ def plot_majority_ridge_plot(majority_illusion: np.ndarray) -> None:
 def plot_topic_degree_corr(
     G: nx.Graph, topic_dist_path: str = "data/user-topic_distribution.csv"
 ) -> None:
+    """
+    Plot the correlation between the degree of a node and the topic distribution
+    of that node.
+
+    param
+    -----
+    G: nx.Graph
+        Undirected graph to calculate majority illusion for.
+    topic_dist_path: str
+        Path to the topic distribution for each user.
+    """
+
     topic_df = pd.read_csv(topic_dist_path, index_col=0)
     topic_deg_df = topic_df.merge(
         pd.DataFrame(tuple(G.degree), columns=["user", "degree"]), on="user"
@@ -207,6 +259,21 @@ def plot_topic_degree_corr(
 def plot_illusion_network(
     G: nx.Graph, node_names: List[str], majority_illusion: np.ndarray, topic: int = 15
 ) -> None:
+    """
+    Plot the network of the majority illusion for a given topic.
+
+    param
+    -----
+    G: nx.Graph
+        Undirected graph to calculate majority illusion for.
+    node_names: List[str]
+        List of node names to include in the network.
+    majority_illusion: np.ndarray
+        Array of the deviation from the global topic distribution.
+    topic: int
+        Topic to plot.
+    """
+
     fig, ax = plt.subplots(dpi=500, figsize=(10, 10))
 
     # Subset G to only include nodes with majority illusion
